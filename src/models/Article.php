@@ -152,10 +152,14 @@ class Article extends NgRestModel
     public function getDetailUrl()
     {
         if ($this->cat && $this->cat->slug) {
-            return Url::toRoute(['/news/default/detail', 'id' => $this->id, 'title' => $this->slug, 'category' => $this->cat->slug]);
+            if (!empty($this->slug)) {
+                return Url::toRoute(['/news/default/detail', 'slug' => $this->slug, 'category' => $this->cat->slug]);
+            } else {
+                return Url::toRoute(['/news/default/detail', 'id' => $this->id, 'title' => Inflector::slug($this->title), 'category' => $this->cat->slug]);
+            }
         }
         if (!empty($this->slug)) {
-            return Url::toRoute(['/news/default/detail', 'id' => $this->id, 'title' => $this->slug]);
+            return Url::toRoute(['/news/default/detail', 'slug' => $this->slug]);
         } else {
             return Url::toRoute(['/news/default/detail', 'id' => $this->id, 'title' => Inflector::slug($this->title)]);
         }
