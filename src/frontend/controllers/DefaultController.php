@@ -117,7 +117,7 @@ class DefaultController extends \luya\web\Controller
         if ($categoryId !== null) {
             $model = Cat::findOne($categoryId);
         } else {
-            $model = Cat::findOne(['slug' => $slug]);
+            $model = Cat::find()->i18nWhere('slug', $slug)->one();
         }
         
         if (!$model) {
@@ -157,7 +157,7 @@ class DefaultController extends \luya\web\Controller
         if ($id !== null) {
             $model = Article::findOne(['id' => $id, 'is_deleted' => false]);
         } else {
-            $model = Article::findOne(['slug' => $slug, 'is_deleted' => false]);
+            $model = Article::find()->where(['is_deleted' => false])->i18nWhere('slug', $slug)->one();
         }
         
         if (!$model) {
