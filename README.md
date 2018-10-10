@@ -52,6 +52,8 @@ After successfully installation and configuration run the migrate, import and se
 
 After adding the persmissions to your group you will be able to edit and add new news articles.
 
+If you're using CMS module, remember to create a CMS page for `news` module with desired name (e.g. `blog`).
+
 ## Example Views
 
 As the module will try to render a view for the news overview, here is what this could look like this in a very basic way:

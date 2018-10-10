@@ -15,8 +15,13 @@ use luya\admin\traits\TagsTrait;
  * This is the model class for table "news_article".
  *
  * @property integer $id
+ * @property string $slug
+ * @property string $status
  * @property string $title
  * @property string $text
+ * @property string $seo_title
+ * @property string $seo_keywords
+ * @property string $seo_description
  * @property integer $cat_id
  * @property string $image_id
  * @property string $image_list
@@ -37,7 +42,7 @@ class Article extends NgRestModel
 {
     use SoftDeleteTrait, TagsTrait;
     
-    public $i18n = ['title', 'text', 'teaser_text', 'image_list'];
+    public $i18n = ['title', 'text', 'teaser_text', 'image_list', 'seo_title', 'seo_keywords', 'seo_description'];
 
     /**
      * @inheritdoc
@@ -83,7 +88,7 @@ class Article extends NgRestModel
     {
         return [
             [['title', 'text'], 'required'],
-            [['title', 'text', 'image_list', 'file_list', 'teaser_text'], 'string'],
+            [['title', 'text', 'image_list', 'file_list', 'teaser_text', 'slug'], 'string'],
             [['cat_id', 'create_user_id', 'update_user_id', 'timestamp_create', 'timestamp_update', 'timestamp_display_from', 'timestamp_display_until'], 'integer'],
             [['is_deleted', 'is_display_limit'], 'boolean'],
             [['image_id'], 'safe'],
@@ -96,7 +101,9 @@ class Article extends NgRestModel
     public function attributeLabels()
     {
         return [
+            'id' => Module::t('id'),
             'title' => Module::t('article_title'),
+            'slug' => Module::t('article_slug'),
             'text' => Module::t('article_text'),
             'teaser_text' => Module::t('teaser_text'),
             'cat_id' => Module::t('article_cat_id'),
@@ -115,9 +122,16 @@ class Article extends NgRestModel
      */
     public function ngRestAttributeTypes()
     {
+        if (Yii::$app->controller->module->id == 'newsadmin') {
+            $markdownEnabled = Yii::$app->controller->module->enableMarkdown;
+        } else {
+            $markdownEnabled = true;
+        }
         return [
+            'id' => 'text',
             'title' => 'text',
-            'teaser_text' => ['textarea', 'markdown' => true],
+            'slug' => 'text',
+            'teaser_text' => ['textarea', 'markdown' => $markdownEnabled],
             'text' => ['wysiwyg'],
             'image_id' => 'image',
             'timestamp_create' => 'datetime',
@@ -136,7 +150,14 @@ class Article extends NgRestModel
      */
     public function getDetailUrl()
     {
-        return Url::toRoute(['/news/default/detail', 'id' => $this->id, 'title' => Inflector::slug($this->title)]);
+        if ($this->cat && $this->cat->slug) {
+            return Url::toRoute(['/news/default/detail', 'id' => $this->id, 'title' => $this->slug, 'category' => $this->cat->slug]);
+        }
+        if (!empty($this->slug)) {
+            return Url::toRoute(['/news/default/detail', 'id' => $this->id, 'title' => $this->slug]);
+        } else {
+            return Url::toRoute(['/news/default/detail', 'id' => $this->id, 'title' => Inflector::slug($this->title)]);
+        }
     }
 
     /**
@@ -174,8 +195,9 @@ class Article extends NgRestModel
     public function ngRestScopes()
     {
         return [
-            [['list'], ['cat_id', 'title', 'timestamp_create', 'image_id']],
-            [['create', 'update'], ['cat_id', 'title', 'teaser_text', 'text', 'timestamp_create', 'timestamp_display_from', 'is_display_limit', 'timestamp_display_until', 'image_id', 'image_list', 'file_list']],
+            [['list'], ['id', 'cat_id', 'slug', 'title', 'timestamp_create', 'image_id']],
+            [['create'], ['slug', 'cat_id', 'title', 'teaser_text', 'text', 'timestamp_create', 'timestamp_display_from', 'is_display_limit', 'timestamp_display_until', 'image_id', 'image_list', 'file_list']],
+            [['update'], ['slug', 'cat_id', 'title', 'teaser_text', 'text', 'timestamp_create', 'timestamp_display_from', 'is_display_limit', 'timestamp_display_until', 'image_id', 'image_list', 'file_list']],
             [['delete'], true],
         ];
     }

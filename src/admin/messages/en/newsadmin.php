@@ -29,4 +29,8 @@ return [
 // 1.0.0
     
     'teaser_text' => 'Teaser Text',
+
+// 1.1.0
+
+    'article_slug' => 'Article URL alias',
 ];
