@@ -26,5 +26,7 @@ return [
     'tag_title_create_error' => 'Choisir le titre de l\'étiquette',
 		
 	// 1.0.0
-	'teaser_text' => 'Teaser Text',
+	'teaser_text' => 'Résumé de l\'article',
+// 1.1.0
+    'article_slug' => 'URL de l\'article',
 ];
