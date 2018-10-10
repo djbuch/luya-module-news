@@ -111,8 +111,6 @@ class DefaultController extends \luya\web\Controller
      */
     public function actionCategory($categoryId = null, $slug = null)
     {
-        echo "cat" . $categoryId . " " . $slug;
-        die();
         if ($categoryId === null && $slug === null) {
             return $this->goHome();
         }
@@ -153,8 +151,6 @@ class DefaultController extends \luya\web\Controller
      */
     public function actionDetail($id = null, $title = null, $category = null, $slug = null)
     {
-        echo "det" . $id . " " . $slug;
-        die();
         if ($id === null && $slug === null) {
             return $this->goHome();
         }
