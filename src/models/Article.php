@@ -131,7 +131,7 @@ class Article extends NgRestModel
         return [
             'id' => 'text',
             'title' => 'text',
-            'slug' => ['slug', 'listner' => 'title'],
+            'slug' => ['slug', 'listener' => 'title'],
             'teaser_text' => ['textarea', 'markdown' => $markdownEnabled],
             'text' => ['wysiwyg'],
             'image_id' => 'image',
