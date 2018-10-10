@@ -15,7 +15,7 @@ class Cat extends NgRestModel
     /**
      * @inheritdoc
      */
-    public $i18n = ['title'];
+    public $i18n = ['title', 'slug'];
     
     /**
      * @inheritdoc
@@ -81,7 +81,7 @@ class Cat extends NgRestModel
     {
         return [
             'title' => 'text',
-            'slug' => 'text',
+            'slug' => ['slug', 'listener' => 'title'],
         ];
     }
 

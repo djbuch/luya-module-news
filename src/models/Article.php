@@ -41,8 +41,8 @@ use luya\admin\traits\TagsTrait;
 class Article extends NgRestModel
 {
     use SoftDeleteTrait, TagsTrait;
-    
-    public $i18n = ['title', 'text', 'teaser_text', 'image_list', 'seo_title', 'seo_keywords', 'seo_description'];
+
+    public $i18n = ['title', 'slug', 'text', 'teaser_text', 'image_list', 'seo_title', 'seo_keywords', 'seo_description'];
 
     /**
      * @inheritdoc
@@ -67,7 +67,7 @@ class Article extends NgRestModel
         $this->update_user_id = Yii::$app->adminuser->getId();
         $this->timestamp_update = time();
     }
-    
+
     public function eventBeforeInsert()
     {
         $this->create_user_id = Yii::$app->adminuser->getId();
@@ -117,7 +117,7 @@ class Article extends NgRestModel
             'file_list' => Module::t('article_file_list'),
         ];
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -131,7 +131,7 @@ class Article extends NgRestModel
         return [
             'id' => 'text',
             'title' => 'text',
-            'slug' => 'text',
+            'slug' => ['slug', 'listner' => 'title'],
             'teaser_text' => ['textarea', 'markdown' => $markdownEnabled],
             'text' => ['wysiwyg'],
             'image_id' => 'image',
@@ -163,14 +163,14 @@ class Article extends NgRestModel
 
     /**
      * Get image object.
-     * 
+     *
      * @return \luya\admin\image\Item|boolean
      */
     public function getImage()
     {
-    	return Yii::$app->storage->getImage($this->image_id);
+        return Yii::$app->storage->getImage($this->image_id);
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -178,18 +178,18 @@ class Article extends NgRestModel
     {
         return 'api-news-article';
     }
-    
+
     /**
      * @inheritdoc
      */
     public function ngRestAttributeGroups()
     {
         return [
-            [['timestamp_create', 'timestamp_display_from', 'is_display_limit', 'timestamp_display_until'], Module::t('time'), 'collapsed'],
-            [['image_id', 'image_list', 'file_list'], Module::t('media')],
+            [['timestamp_create', 'timestamp_display_from', 'is_display_limit', 'timestamp_display_until'], 'Time', 'collapsed'],
+            [['image_id', 'image_list', 'file_list'], 'Media'],
         ];
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -197,12 +197,12 @@ class Article extends NgRestModel
     {
         return [
             [['list'], ['id', 'cat_id', 'slug', 'title', 'timestamp_create', 'image_id']],
-            [['create'], ['slug', 'cat_id', 'title', 'teaser_text', 'text', 'timestamp_create', 'timestamp_display_from', 'is_display_limit', 'timestamp_display_until', 'image_id', 'image_list', 'file_list']],
-            [['update'], ['slug', 'cat_id', 'title', 'teaser_text', 'text', 'timestamp_create', 'timestamp_display_from', 'is_display_limit', 'timestamp_display_until', 'image_id', 'image_list', 'file_list']],
+            [['create'], ['title','slug',  'teaser_text', 'text', 'cat_id',  'timestamp_create', 'timestamp_display_from', 'is_display_limit', 'timestamp_display_until', 'image_id', 'image_list', 'file_list']],
+            [['update'], ['title','slug',  'teaser_text', 'text', 'cat_id', 'timestamp_create', 'timestamp_display_from', 'is_display_limit', 'timestamp_display_until', 'image_id', 'image_list', 'file_list']],
             [['delete'], true],
         ];
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -223,11 +223,11 @@ class Article extends NgRestModel
         $q = self::find()
             ->andWhere('timestamp_display_from <= :time', ['time' => time()])
             ->orderBy('timestamp_display_from DESC');
-        
+
         if ($limit) {
             $q->limit($limit);
         }
-        
+
         $articles = $q->all();
 
         // filter if display time is limited
@@ -250,7 +250,7 @@ class Article extends NgRestModel
     {
         return $this->hasOne(Cat::class, ['id' => 'cat_id']);
     }
-    
+
     /**
      * The cat name short getter.
      *

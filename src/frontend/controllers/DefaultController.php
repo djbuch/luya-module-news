@@ -109,9 +109,16 @@ class DefaultController extends \luya\web\Controller
      * @param integer $categoryId
      * @return \yii\web\Response|string
      */
-    public function actionCategory($categoryId)
+    public function actionCategory($categoryId = null, $slug = null)
     {
-        $model = Cat::findOne($categoryId);
+        if ($categoryId === null && $slug === null) {
+            return $this->goHome();
+        }
+        if ($categoryId !== null) {
+            $model = Cat::findOne($categoryId);
+        } else {
+            $model = Cat::findOne(['slug' => $slug]);
+        }
         
         if (!$model) {
             return $this->goHome();
@@ -142,9 +149,16 @@ class DefaultController extends \luya\web\Controller
      * @param string $title
      * @return \yii\web\Response|string
      */
-    public function actionDetail($id, $title, $category = null)
+    public function actionDetail($id = null, $title = null, $category = null, $slug = null)
     {
-        $model = Article::findOne(['id' => $id, 'is_deleted' => false]);
+        if ($id === null && $slug === null) {
+            return $this->goHome();
+        }
+        if ($id !== null) {
+            $model = Article::findOne(['id' => $id, 'is_deleted' => false]);
+        } else {
+            $model = Article::findOne(['slug' => $slug, 'is_deleted' => false]);
+        }
         
         if (!$model) {
             return $this->goHome();
