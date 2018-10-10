@@ -29,4 +29,7 @@ return [
 	'teaser_text' => 'Résumé de l\'article',
 // 1.1.0
     'article_slug' => 'URL de l\'article',
+
+    'time' => 'Temps',
+    'media' => 'Média'
 ];

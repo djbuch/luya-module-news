@@ -33,4 +33,8 @@ return [
 // 1.1.0
 
     'article_slug' => 'Article URL alias',
+
+
+    'time' => 'Time',
+    'media' => 'Temps'
 ];

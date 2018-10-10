@@ -185,8 +185,8 @@ class Article extends NgRestModel
     public function ngRestAttributeGroups()
     {
         return [
-            [['timestamp_create', 'timestamp_display_from', 'is_display_limit', 'timestamp_display_until'], 'Time', 'collapsed'],
-            [['image_id', 'image_list', 'file_list'], 'Media'],
+            [['timestamp_create', 'timestamp_display_from', 'is_display_limit', 'timestamp_display_until'], Module::t('time'), 'collapsed'],
+            [['image_id', 'image_list', 'file_list'], Module::t('media')],
         ];
     }
     
