@@ -63,6 +63,7 @@ class Cat extends NgRestModel
         return [
             [['title'], 'required'],
             [['slug'], 'string', 'min' => 3, 'max' => 128],
+            [['slug'], 'unique'],
         ];
     }
 
